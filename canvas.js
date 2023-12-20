@@ -1,5 +1,7 @@
 const snowfalldiv = document.getElementById("snowfall");
 const canvas = document.createElement("canvas");
+const heightScreen = window.innerHeight;
+
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 
@@ -7,6 +9,7 @@ window.addEventListener("resize", function () {
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
 });
+
 snowfalldiv.appendChild(canvas);
 
 const w = canvas.width;
@@ -15,13 +18,12 @@ const h = canvas.height;
 const ctx = canvas.getContext("2d");
 const backgroundImage = new Image();
 backgroundImage.src = "OIG.jpg";
-backgroundImage.classList = "image";
 
 const flakes = [];
 
 class snowfall {
   static snowFall() {
-    ctx.drawImage(backgroundImage, 0, 0, w, h);
+    ctx.drawImage(backgroundImage, 0, 0, window.innerWidth, window.innerHeight);
     snowfall.addFlakes();
     snowfall.addSnow();
   }
@@ -40,17 +42,18 @@ class snowfall {
   }
 
   static addSnow() {
+    console.log("length: ", flakes.length);
     for (let i = 0; i < flakes.length; i++) {
       let oneFlake = flakes[i];
-
-      // creating circles
+      oneFlake.y += oneFlake.speed / 2;
+      if (oneFlake.y > heightScreen) {
+        flakes.splice(i, 1);
+      }
       ctx.beginPath();
-      // color the circles
       ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-      // drawing circle
       ctx.arc(
         oneFlake.x,
-        (oneFlake.y += oneFlake.speed / 2),
+        oneFlake.y,
         oneFlake.speed * 0.8,
         0,
         oneFlake.radius
